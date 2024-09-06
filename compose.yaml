@@ -1,0 +1,50 @@
+
+volumes:
+  mysqldata:
+  # neo4jdata:
+
+services:
+  api:
+    image: api
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 1993:1993
+    environment:
+      DB_HOST: mysqldb
+      DB_USER: websiteuser
+      DB_PASSWORD: Tg9rJv4bDf
+      DB_NAME: website
+      DB_PORT: 3307
+    depends_on:
+      - mysqldb
+    restart: always
+    develop:
+      watch:
+        - path: .
+          target: /app
+          action: sync+restart
+  mysqldb:
+    image: mysql:9.0.1 
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=Tg9rJv4bDf
+      - MYSQL_DATABASE=quotes
+    # expose:
+    #   - "3306"
+    ports:
+      - '3307:3306'
+    volumes:
+      - mysqldata:/var/lib/mysql
+  # everyware-neo4j:
+  #   image: neo4j:5.23.0
+  #   restart: always
+  #   environment:
+  #     NEO4J_AUTH: neo4j/Tg9rJv4bDf
+  #   ports:
+  #     - '7474:7474'
+  #     - '7687:7687'
+  #   volumes:
+  #     - neo4jdata:/data
+  
